@@ -1,0 +1,80 @@
+rabbitconfig:
+  queues:
+    queue1:
+      name: q.event.document
+      durable: true
+      exclusive: false
+      autoDelete: false
+      arguments:
+        x-message-ttl: 600000
+        x-dead-letter-exchange: exc.dlx.messages
+        x-dead-letter-routing-key: rk-q.dlx-exc.dlx
+    retryQueue1:
+      name: q.event.retry1
+      durable: true
+      exclusive: false
+      autoDelete: false
+      arguments:
+        x-dead-letter-exchange: exc.retryWaitEnded
+        x-dead-letter-routing-key: retryWaitEndedQueue-retryWaitEndedExc
+    retryQueue2:
+      name: q.event.retry2
+      durable: true
+      exclusive: false
+      autoDelete: false
+      arguments:
+        x-dead-letter-exchange: exc.retryWaitEnded
+        x-dead-letter-routing-key: retryWaitEndedQueue-retryWaitEndedExc
+    retryQueue3:
+      name: q.event.retry3
+      durable: true
+      exclusive: false
+      autoDelete: false
+      arguments:
+        x-dead-letter-exchange: exc.retryWaitEnded
+        x-dead-letter-routing-key: retryWaitEndedQueue-retryWaitEndedExc
+    retryWaitEndedQueue:
+      name: q.event.retryWaitEndedQueue
+      durable: true
+      exclusive: false
+      autoDelete: false
+      arguments:
+        x-message-ttl: 30000
+        x-dead-letter-exchange: exc.dlx.messages
+        x-dead-letter-routing-key: rk-q.dlx-exc.dlx
+    deadLetterQueue:
+      name: q.dlx.messages
+      durable: true
+      exclusive: false
+      autoDelete: false
+      arguments:
+        x-message-ttl: 600000
+  exchanges:
+    exchange1:
+      name: exc.document
+      durable: true
+      autoDelete: false
+      exchangeType: direct
+    deadLetterExchange:
+      name: exc.dlx.messages
+      durable: true
+      autoDelete: false
+      exchangeType: direct
+    retryWaitEndedExchange:
+      name: exc.retryWaitEnded
+      durable: true
+      autoDelete: false
+      exchangeType: direct
+  bindings:
+    binding1:
+      queueName: q.event.document
+      exchangeName: exc.document
+      routingKey: rk-queue1-exchange1
+    deadLetterBinding:
+      queueName: q.dlx.messages
+      exchangeName: exc.dlx.messages
+      routingKey: rk-q.dlx-exc.dlx
+    retryWaitEndedBinding:
+      queueName: q.event.retryWaitEndedQueue
+      exchangeName: exc.retryWaitEnded
+      routingKey: retryWaitEndedQueue-retryWaitEndedExc
